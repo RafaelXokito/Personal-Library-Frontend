@@ -1,3 +1,5 @@
+
+import axios from "axios";
 import React, { useState } from 'react';
 import { Button, TextField, Typography, Link, Container } from '@mui/material';
 import styled from '@emotion/styled';
@@ -21,60 +23,65 @@ function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isLoggedIn] = useState(false);
-
-    const isAuthenticated = !!localStorage.getItem("accessToken");
-
-    if (isAuthenticated) {
-        return <Redirect to="/" />; 
-    }
-
     const handleSubmit = async (e) => {
+        console.log("Login form submitted!")
         e.preventDefault();
-    
+
         // Define the request URL and body
         const url = "http://localhost:8080/api/auth/login";
         const requestBody = {
             email: email,
             password: password
         };
-    
+
         try {
             // Make the HTTP POST request
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(requestBody)
-            });
-    
-            // Check if the response is successful
-            if (response.ok) {
-                const data = await response.json();
-    
-                // Store the tokens and userId in local storage or state
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
-                localStorage.setItem("userId", data.userId);
-    
-                // Redirect to the home after successful login
-                history('/')
-    
-                console.log("Login successful!");
-            } else {
-                // Handle errors (e.g., wrong credentials)
-                const errorData = await response.json();
-                console.error("Error logging in:", errorData.message);
+            const response = await axios.post(url, requestBody);
+
+            // Store the tokens and userId in local storage or state
+            localStorage.setItem("accessToken", response.data.accessToken);
+            localStorage.setItem("refreshToken", response.data.refreshToken);
+            localStorage.setItem("userId", response.data.userId);
+            localStorage.setItem("isLoggedIn", true);
+
+            // Set up axios defaults
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`;
+            
+            try {
+                // Make the GET request to the /me endpoint
+                const response = await axios.get("http://localhost:8080/api/auth/me");
+        
+                if (response.data) {
+                    // Store the user data or process as required
+                    localStorage.setItem("userData", JSON.stringify(response.data));
+                    localStorage.setItem("isLoggedIn", true);
+                }
+            } catch (error) {
+                return false;
             }
+
+            // Redirect to the home after successful login
+            history('/')
+            console.log("Login successful!");
         } catch (error) {
-            console.error("Network error:", error);
+            if (error.response && error.response.data) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error("Error logging in:", error.response.data.message);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error("No response received:", error.request);
+            } else {
+                // Something happened in setting up the request that triggered an error
+                console.error("Error setting up request:", error.message);
+            }
         }
     };
 
+
     return (
         <div>
-        <NavBar isLoggedIn={isLoggedIn} />
+        <NavBar />
         <Container className={classes.container} maxWidth="xs">
             <Typography variant="h5" align="center">Login</Typography>
             <form className={classes.form} onSubmit={handleSubmit}>

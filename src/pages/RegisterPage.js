@@ -2,6 +2,8 @@ import { React, useState } from 'react';
 import { Button, TextField, Typography, Container, Switch, FormControlLabel } from '@mui/material';
 import styled from '@emotion/styled';
 import NavBar from '../components/NavBar';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = styled((theme) => ({
     container: {
@@ -15,6 +17,7 @@ const useStyles = styled((theme) => ({
 }));
 
 function RegisterPage() {
+    const history = useNavigate();
 
     const [isLoggedIn] = useState(false);
 
@@ -37,16 +40,47 @@ function RegisterPage() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle registration logic here...
-        console.log(formData);
-        console.log("Is Writer?", isWriter);
-    };
+    
+        try {
+            // 1. Make a POST request to register the user
+            const registerResponse = await axios.post('http://localhost:8080/api/auth/register', {
+                ...formData,
+                isWriter: isWriter
+            });
+    
+            // Check if the response contains an accessToken
+            if (registerResponse.data && registerResponse.data.accessToken) {
+
+                // Store the tokens and userId in local storage or state
+                localStorage.setItem("accessToken", registerResponse.data.accessToken);
+                localStorage.setItem("refreshToken", registerResponse.data.refreshToken);
+                localStorage.setItem("userId", registerResponse.data.userId);
+                localStorage.setItem("isLoggedIn", true);
+                
+                // 2. Update axios headers
+                axios.defaults.headers.common['Authorization'] = `Bearer ${registerResponse.data.accessToken}`;
+    
+                // 3. Make a GET request to the /me endpoint
+                const userResponse = await axios.get('http://localhost:8080/api/auth/me');
+    
+                if (userResponse.data) {
+                    // 4. Store user data in local storage
+                    localStorage.setItem('userData', JSON.stringify(userResponse.data));
+                    localStorage.setItem('isLoggedIn', true);
+                    history('/')
+                }
+            }
+        } catch (error) {
+            console.error('Error during registration or fetching user info:', error);
+            // Handle the error as required, e.g., showing an error message to the user.
+        }
+    };    
 
     return (
         <div>
-        <NavBar isLoggedIn={isLoggedIn} />
+        <NavBar />
         <Container className={classes.container} maxWidth="xs">
             <Typography variant="h5" align="center">Register</Typography>
             <form className={classes.form} onSubmit={handleSubmit}>

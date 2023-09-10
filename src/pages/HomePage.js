@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { Typography, Grid, Card, CardContent, TextField, Button } from '@mui/material';
 import styled from '@emotion/styled';
 
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import NavBar from '../components/NavBar';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = styled((theme) => ({
     root: {
@@ -18,10 +19,12 @@ function HomePage() {
 
     const classes = useStyles();
 
+    const history = useNavigate();
+
     // State to hold the books
     const [books, setBooks] = useState([]);
 
-    const [isLoggedIn] = useState(false);
+    const [myBooks, setMyBooks] = useState([]);
 
     const [searchParams, setSearchParams] = useState({
         title: '',
@@ -29,12 +32,36 @@ function HomePage() {
         writerName: ''
     });
 
+    const [userData, setUserData] = useState([]);
+
     // Fetch books from the API when the component mounts
     useEffect(() => {
+
+        console.log("User is logged in!");
+        setUserData(JSON.parse(localStorage.getItem('userData')));
+
         fetch('http://localhost:8080/api/books')
             .then(response => response.json())
             .then(data => setBooks(data))
             .catch(error => console.error('Error fetching books:', error));
+        
+        if (localStorage.getItem("isLoggedIn") === "true") {
+            const fetchUserBooks = async () => {
+                try {
+                    const response = await axios.get("http://localhost:8080/api/books/my", {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+                        }
+                    });
+                    setMyBooks(response.data);
+                } catch (error) {
+                    console.error("Error fetching user books:", error.message);
+                }
+            };
+
+            fetchUserBooks();
+        }
+
     }, []); // The empty dependency array ensures this useEffect runs once when the component mounts
 
     const handleSearch = async () => {
@@ -50,10 +77,39 @@ function HomePage() {
         }
     };
 
+    const handleAddThisBook = (book) => async () => {
+        try {
+            /*const response = */await axios.patch(`http://localhost:8080/api/books/${book.id}/add`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("accessToken")}`
+                }
+            });
+
+            setMyBooks(prevBooks => {
+                return [
+                  ...prevBooks,
+                  book
+                ]
+              })
+            
+            // TODO - ALERT USER THAT BOOK IS ADDED TO MY BOOKS
+        } catch (error) {
+            console.error("Error fetching user books:", error.message);
+        }
+    };
+
+    const handleAuthClickThisBook = (bookId) => async () => {
+        if (userData.role === 'READER') {
+            return history(`/read-book/${bookId}`)
+        } else if (userData.role === 'WRITER') {
+            return history(`/stats-book/${bookId}`)
+        }
+    };
+
     return (
         <div>
             <div className={classes.root}>
-                <NavBar isLoggedIn={isLoggedIn} />
+                <NavBar />
                 <Grid container spacing={2} justify="center" alignItems="center">
                     <Grid item xs={12} sm={3}>
                         <TextField
@@ -97,6 +153,23 @@ function HomePage() {
                                     <Typography variant="body2" color="textSecondary">
                                         {book.description}
                                     </Typography>
+                                    <Typography variant="body2" color="textSecondary">
+                                        {book.writerName}
+                                    </Typography>
+                                    { !myBooks.find(myBook => myBook.id === book.id) ? (
+                                        userData && userData.role === 'READER' ?
+                                        <Button variant="contained" color="primary" onClick={handleAddThisBook(book)}>
+                                            Add
+                                        </Button>
+                                        : 
+                                        localStorage.getItem("isLoggedIn") === "True" ?
+                                        <p>Not Your Book</p>
+                                        : null
+                                    ) : (
+                                        <Button variant="contained" color="secondary" onClick={handleAuthClickThisBook(book.id)}>
+                                            {userData && userData.role === 'READER' ? "Read" : "Stats"}
+                                        </Button>
+                                    )}
                                 </CardContent>
                             </Card>
                         </Grid>
