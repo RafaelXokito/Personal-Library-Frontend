@@ -15,6 +15,11 @@ const StyledReadBookPage = styled.div`
         margin-bottom: 1.5rem;
     }
 
+    h2 {
+        color: #007BFF;
+        margin-bottom: 1.5rem;
+    }
+
     button {
         padding: 0.5rem 1rem;
         margin: 0 0.5rem;
@@ -163,6 +168,7 @@ function ReadBookPage() {
                 <button onClick={() => handlePageChange('next')}>Next Page</button>
             </div>
             <div className="writerInfo">
+                <h2>Writer Info</h2>
                 <p>{writer.name}</p>
                 <p>{writer.email}</p>
             </div>

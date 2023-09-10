@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { AppBar as MuiAppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
+import { AppBar as MuiAppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const StyledAppBar = styled(MuiAppBar)`
@@ -11,18 +11,6 @@ const Title = styled(Typography)`
     cursor: pointer;
     &:hover {
         text-decoration: underline;
-    }
-`;
-
-const MenuIconButton = styled(IconButton)`
-    color: #007BFF;
-`;
-
-const StyledButton = styled(Button)`
-    margin-left: 10px;
-    background-color: #28a745;
-    &:hover {
-        background-color: #218838;
     }
 `;
 
@@ -41,12 +29,16 @@ function NavBar() {
         history('/write-a-book');
     }
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     return (
         <div>
             <StyledAppBar position="static">
                 <Toolbar>
                     <Title variant="h6" style={{ flexGrow: 1 }} onClick={() => history('/')}>
-                        Personal Book Library
+                        Personal Book Library | {isLoggedIn ? capitalizeFirstLetter(String(userData?.role)) : "Guest"}
                     </Title>
                     <Button color="inherit" onClick={() => history('/')}>
                         All Books
