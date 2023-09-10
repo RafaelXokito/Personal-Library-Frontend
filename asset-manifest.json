@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/personal-library-frontend/static/css/main.e6c13ad2.css",
+    "main.js": "/personal-library-frontend/static/js/main.481cf2de.js",
+    "static/js/787.8a8d4e6e.chunk.js": "/personal-library-frontend/static/js/787.8a8d4e6e.chunk.js",
+    "index.html": "/personal-library-frontend/index.html",
+    "main.e6c13ad2.css.map": "/personal-library-frontend/static/css/main.e6c13ad2.css.map",
+    "main.481cf2de.js.map": "/personal-library-frontend/static/js/main.481cf2de.js.map",
+    "787.8a8d4e6e.chunk.js.map": "/personal-library-frontend/static/js/787.8a8d4e6e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.481cf2de.js"
+  ]
+}
