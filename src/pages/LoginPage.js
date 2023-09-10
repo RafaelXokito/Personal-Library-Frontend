@@ -6,20 +6,43 @@ import styled from '@emotion/styled';
 import NavBar from '../components/NavBar';
 import { useNavigate } from 'react-router-dom';
 
-const useStyles = styled((theme) => ({
-    container: {
-        padding: theme.spacing(2),
+
+const ContainerStyled = styled('div')`
+    flexGrow: 1;
+    padding: 24px;  // Replacing theme.spacing(3) with a static value
+    background: linear-gradient(120deg, #f6f9fc, #eef1f5);
+    min-height: 100vh;
+`;
+
+const StyledContainer = styled(Container)`
+    padding: 2rem;
+    background: linear-gradient(120deg, #f6f9fc, #eef1f5);
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.08);
+    margin-top: 3rem;
+`;
+
+const StyledTypography = styled(Typography)({
+    color: '#007BFF',
+    marginBottom: '2rem',
+});
+
+const StyledForm = styled('form')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+});
+
+const StyledLink = styled(Link)({
+    color: '#FE6B8B',  // Pinkish shade from the gradient
+    textDecoration: 'none',
+    '&:hover': {
+        textDecoration: 'underline',
     },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-    },
-}));
+});
 
 function LoginPage() {
     const history = useNavigate();
-    const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -80,35 +103,35 @@ function LoginPage() {
 
 
     return (
-        <div>
-        <NavBar />
-        <Container className={classes.container} maxWidth="xs">
-            <Typography variant="h5" align="center">Login</Typography>
-            <form className={classes.form} onSubmit={handleSubmit}>
-                <TextField
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Login
-                </Button>
-            </form>
-            <Typography align="center">
-                Don't have an account? <Link href="/register">Register</Link>
-            </Typography>
-        </Container>
-        </div>
+        <ContainerStyled>
+            <NavBar />
+            <StyledContainer maxWidth="xs">
+                <StyledTypography variant="h5" align="center">Login</StyledTypography>
+                <StyledForm onSubmit={handleSubmit}>
+                    <TextField
+                        label="Email"
+                        variant="outlined"
+                        fullWidth
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        label="Password"
+                        variant="outlined"
+                        fullWidth
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }}>
+                        Login
+                    </Button>
+                </StyledForm>
+                <Typography align="center" style={{ marginTop: '1rem' }}>
+                    Don't have an account? <StyledLink href="/register">Register</StyledLink>
+                </Typography>
+            </StyledContainer>
+        </ContainerStyled>
     );
 }
 

@@ -5,23 +5,41 @@ import NavBar from '../components/NavBar';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const useStyles = styled((theme) => ({
-    container: {
-        padding: theme.spacing(2),
-    },
-    form: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-    },
-}));
+const ContainerStyled = styled('div')`
+    flexGrow: 1;
+    padding: 24px;  // Replacing theme.spacing(3) with a static value
+    background: linear-gradient(120deg, #f6f9fc, #eef1f5);
+    min-height: 100vh;
+`;
+
+const StyledContainer = styled(Container)`
+    padding: 2rem;
+    background: linear-gradient(120deg, #f6f9fc, #eef1f5);
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.08);
+    margin-top: 3rem;
+`;
+
+const StyledTypography = styled(Typography)({
+    color: '#007BFF',
+    marginBottom: '2rem',
+});
+
+const StyledForm = styled('form')({
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+});
+
+const FormControlStyled = styled(FormControlLabel)`
+&& {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+`;
 
 function RegisterPage() {
     const history = useNavigate();
-
-    const [isLoggedIn] = useState(false);
-
-    const classes = useStyles();
     
     const [formData, setFormData] = useState({
         firstName: '',
@@ -39,6 +57,7 @@ function RegisterPage() {
             [name]: value
         }));
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -79,60 +98,31 @@ function RegisterPage() {
     };    
 
     return (
-        <div>
-        <NavBar />
-        <Container className={classes.container} maxWidth="xs">
-            <Typography variant="h5" align="center">Register</Typography>
-            <form className={classes.form} onSubmit={handleSubmit}>
-                <TextField
-                    name="firstName"
-                    label="First Name"
-                    variant="outlined"
-                    fullWidth
-                    value={formData.firstName}
-                    onChange={handleChange}
-                />
-                <TextField
-                    name="lastName"
-                    label="Last Name"
-                    variant="outlined"
-                    fullWidth
-                    value={formData.lastName}
-                    onChange={handleChange}
-                />
-                <TextField
-                    name="email"
-                    label="Email"
-                    variant="outlined"
-                    fullWidth
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <TextField
-                    name="password"
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                />
-                <FormControlLabel
-                    control={
-                        <Switch
-                            checked={isWriter}
-                            onChange={() => setIsWriter(!isWriter)}
-                            color="primary"
-                        />
-                    }
-                    label="Register as Writer"
-                />
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                    Register
-                </Button>
-            </form>
-        </Container>
-        </div>
+        <ContainerStyled>
+            <NavBar />
+            <StyledContainer maxWidth="xs">
+                <StyledTypography variant="h5" align="center">Register</StyledTypography>
+                <StyledForm onSubmit={handleSubmit}>
+                    <TextField name="firstName" label="First Name" variant="outlined" fullWidth value={formData.firstName} onChange={handleChange} />
+                    <TextField name="lastName" label="Last Name" variant="outlined" fullWidth value={formData.lastName} onChange={handleChange} />
+                    <TextField name="email" label="Email" variant="outlined" fullWidth value={formData.email} onChange={handleChange} />
+                    <TextField name="password" label="Password" variant="outlined" fullWidth type="password" value={formData.password} onChange={handleChange} />
+                    <FormControlStyled
+                        control={
+                            <Switch
+                                checked={isWriter}
+                                onChange={() => setIsWriter(!isWriter)}
+                                color="primary"
+                            />
+                        }
+                        label="Register as Writer"
+                    />
+                    <Button type="submit" variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }}>
+                        Register
+                    </Button>
+                </StyledForm>
+            </StyledContainer>
+        </ContainerStyled>
     );
 }
 

@@ -1,7 +1,30 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
+import styled from '@emotion/styled';
+import { AppBar as MuiAppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+
+const StyledAppBar = styled(MuiAppBar)`
+    background: linear-gradient(45deg, #5a7d9a, #b0c7d4);
+    border-radius: 10px;
+`;
+
+const Title = styled(Typography)`
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+`;
+
+const MenuIconButton = styled(IconButton)`
+    color: #007BFF;
+`;
+
+const StyledButton = styled(Button)`
+    margin-left: 10px;
+    background-color: #28a745;
+    &:hover {
+        background-color: #218838;
+    }
+`;
 
 function NavBar() {
     const history = useNavigate();
@@ -20,14 +43,11 @@ function NavBar() {
 
     return (
         <div>
-            <AppBar position="static">
+            <StyledAppBar position="static">
                 <Toolbar>
-                    <IconButton edge="start" color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" style={{ flexGrow: 1 }} onClick={() => history('/')}>
+                    <Title variant="h6" style={{ flexGrow: 1 }} onClick={() => history('/')}>
                         Personal Book Library
-                    </Typography>
+                    </Title>
                     <Button color="inherit" onClick={() => history('/')}>
                         All Books
                     </Button>
@@ -50,7 +70,7 @@ function NavBar() {
                         </Button>
                     )}
                 </Toolbar>
-            </AppBar>
+            </StyledAppBar>
         </div>
     );
 }
