@@ -37,12 +37,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your_username/PersonalBookLibraryFrontend.git
+   git clone https://github.com/RafaelXokito/personal-library-frontend.git
    ```
 
 2. Navigate to the project directory:
    ```bash
-   cd PersonalBookLibraryFrontend
+   cd personal-library-frontend
    ```
 
 3. Install the required packages:
@@ -66,7 +66,7 @@ The application should now be running on `http://localhost:3000/`.
 
 ## API Endpoints
 
-The frontend interacts with the following API endpoints:
+The frontend interacts with the following API endpoints [Backend Repo](https://github.com/RafaelXokito/Personal-Library):
 
 1. **Name:** Create Writer
    - **Method:** POST
