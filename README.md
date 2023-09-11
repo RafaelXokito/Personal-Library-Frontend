@@ -1,6 +1,6 @@
 # Personal Book Library Frontend
 
-![Demo GIF](assets/main.gif)
+<img src="assets/main.gif" alt="Demo GIF" width="95%" />
 
 A sleek and user-friendly frontend for the Personal Book Library API. Built with React, this application allows users to manage their personal book collection, view book details, search for books, and much more!
 
